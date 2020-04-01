@@ -1,0 +1,34 @@
+#version: '3.7'
+#services:
+#  php:
+#    image: mini_php:latest
+#    volumes:
+#      [./:/app]
+#    working_dir: /app
+#    ports:
+#      [8080:80]
+#
+#
+#
+version: "3.2"
+services:
+  php:
+    image: mini_php:latest
+    networks:
+      - backend
+    volumes:
+      - ./public_html/:/var/www/html/
+  apache:
+    image: mini_apache:latest
+    depends_on:
+      - php
+    networks:
+      - frontend
+      - backend
+    ports:
+      - "8080:80"
+    volumes:
+      - ./public_html/:/var/www/html/
+networks:
+  frontend:
+  backend:
