@@ -1,25 +1,18 @@
-#version: '3.7'
-#services:
-#  php:
-#    image: mini_php:latest
-#    volumes:
-#      [./:/app]
-#    working_dir: /app
-#    ports:
-#      [8080:80]
-#
-#
-#
 version: "3.2"
+volumes:
+  krb5kdc-data:
+  keytabs:
+
 services:
   php:
-    image: mini_php:latest
+    image: php:latest
     networks:
       - backend
     volumes:
       - ./public_html/:/var/www/html/
+      - keytabs:/tmp/
   apache:
-    image: mini_apache:latest
+    image: apache:latest
     depends_on:
       - php
     networks:
@@ -29,6 +22,21 @@ services:
       - "8080:80"
     volumes:
       - ./public_html/:/var/www/html/
+      - keytabs:/tmp/
+  kdc:
+     image: krb5-server:latest
+     restart: unless-stopped
+     ports:
+      - "88:88"
+      - "464:464"
+      - "749:749"
+     environment:
+       KRB5_REALM: EXAMPLE.COM
+       KRB5_KDC: localhost
+       KRB5_PASS: admin
+     volumes:
+      - krb5kdc-data:/var/lib/krb5kdc
+      - keytabs:/tmp/
 networks:
   frontend:
   backend:
