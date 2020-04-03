@@ -1,6 +1,7 @@
-FROM httpd:2.4.33-alpine
+FROM httpd:2.4.43-alpine
 RUN apk update; \
     apk upgrade; \
+    apk add krb5-libs; \
     apk add apache-mod-auth-kerb
 
 COPY ./my-httpd.conf /usr/local/apache2/conf/demo.apache.conf
