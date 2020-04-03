@@ -1,9 +1,4 @@
 FROM php:7.2.7-fpm-alpine3.7
-RUN apk update; \
-    apk upgrade;
-# Squelch configuration directives from kerberos install
-# ARG DEBIAN_FRONTEND=noninteractive
-# RUN apt-get update \
-# && apt-get -qq install libapache2-mod-auth-kerb
-#
-# COPY ./my-httpd.conf /usr/local/apache2/conf/httpd.conf
+RUN apk add --no-cache --update --virtual buildDeps autoconf gcc make g++ zlib-dev krb5-dev \
+  && pecl install krb5 \
+  && docker-php-ext-enable krb5 
